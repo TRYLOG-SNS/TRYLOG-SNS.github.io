@@ -1,6 +1,7 @@
 // ===================================
 // TRYLOG - Post Goal Form (Material Design 3)
 // ===================================
+import { addGoalPost } from '../data/sample.js';
 
 export function renderPostGoal() {
   const defaultDate = new Date();
@@ -188,6 +189,7 @@ export function attachEvents(params) {
   const handleSubmit = () => {
     const title = document.getElementById('field-goal-title')?.value.trim();
     const deadline = document.getElementById('field-deadline')?.value;
+    const comment = document.getElementById('field-goal-other')?.value.trim();
     const actions = Array.from(document.querySelectorAll('.action-input'))
       .map(i => i.value.trim()).filter(Boolean);
 
@@ -196,6 +198,13 @@ export function attachEvents(params) {
       if (showToast) showToast('必須項目をすべて入力してください', 'error', 2500);
       return;
     }
+
+    addGoalPost({
+      title,
+      deadline,
+      actions,
+      comment,
+    });
 
     const { navigate, showToast } = window.__trylog || {};
     if (showToast) showToast('新しい目標を宣言しました！🎯', 'check_circle');

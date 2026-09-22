@@ -1,6 +1,7 @@
 // ===================================
 // TRYLOG - Post Failure Form (Material Design 3)
 // ===================================
+import { addFailurePost } from '../data/sample.js';
 
 let formData = {
   contestName: '',
@@ -8,6 +9,7 @@ let formData = {
   experience: '',
   cause: '',
   emotion: '',
+  emotionEmoji: '😔',
   retryIntent: null,
   other: '',
   images: [],
@@ -22,6 +24,7 @@ const emotionOptions = [
   { emoji: '💪', label: '前向き' },
   { emoji: '😅', label: 'しょうがない' },
   { emoji: '🔥', label: 'やってやる' },
+  { emoji: '💭', label: 'その他' },
 ];
 
 export function renderPostFailure() {
@@ -107,7 +110,7 @@ export function renderPostFailure() {
       </div>
     </div>
 
-    <!-- Emotion Selection Chips -->
+    <!-- Emotion Selection Chips (With "その他" support) -->
     <div class="form-group">
       <label class="form-label">
         <span class="material-symbols-rounded" style="font-size:18px;color:var(--md-sys-color-primary);">mood</span>
@@ -115,11 +118,16 @@ export function renderPostFailure() {
       </label>
       <div style="display:flex;flex-wrap:wrap;gap:8px;" id="emotion-group">
         ${emotionOptions.map((opt) => `
-          <button class="md-chip md-chip-filter emotion-chip" data-label="${opt.label}" style="height:36px;border-radius:var(--md-sys-shape-corner-small);">
+          <button class="md-chip md-chip-filter emotion-chip" data-label="${opt.label}" data-emoji="${opt.emoji}" style="height:36px;border-radius:var(--md-sys-shape-corner-small);">
             <span style="font-size:18px;">${opt.emoji}</span>
             <span>${opt.label}</span>
           </button>
         `).join('')}
+      </div>
+
+      <!-- Custom Emotion Text Input (Shown when その他 is selected) -->
+      <div id="custom-emotion-container" style="display:none;margin-top:10px;">
+        <input id="field-custom-emotion" class="form-input" type="text" placeholder="現在の心情を入力してください（例：不安だがワクワクしている）" maxlength="30" />
       </div>
     </div>
 
@@ -196,6 +204,14 @@ export function attachEvents(params) {
       document.querySelectorAll('.emotion-chip').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       formData.emotion = btn.dataset.label;
+      formData.emotionEmoji = btn.dataset.emoji;
+
+      const customContainer = document.getElementById('custom-emotion-container');
+      if (btn.dataset.label === 'その他') {
+        if (customContainer) customContainer.style.display = 'block';
+      } else {
+        if (customContainer) customContainer.style.display = 'none';
+      }
     });
   });
 
@@ -249,13 +265,34 @@ export function attachEvents(params) {
   const handleSubmit = () => {
     const contestName = document.getElementById('field-contest')?.value.trim();
     const result = document.getElementById('field-result')?.value.trim();
+    const experience = document.getElementById('field-experience')?.value.trim();
     const cause = document.getElementById('field-cause')?.value.trim();
+    const otherComment = document.getElementById('field-other')?.value.trim();
 
     if (!contestName || !result || !cause) {
       const { showToast } = window.__trylog || {};
       if (showToast) showToast('必須項目をすべて入力してください', 'error', 2500);
       return;
     }
+
+    if (formData.emotion === 'その他') {
+      const customVal = document.getElementById('field-custom-emotion')?.value.trim();
+      if (customVal) {
+        formData.emotion = customVal;
+      }
+    }
+
+    // Persist post to failurePosts array
+    addFailurePost({
+      contestName,
+      result,
+      experience,
+      cause,
+      emotion: formData.emotion || '前向き',
+      emotionEmoji: formData.emotionEmoji || '💪',
+      retryIntent: formData.retryIntent ?? true,
+      comment: otherComment,
+    });
 
     const { navigate, showToast } = window.__trylog || {};
     if (showToast) showToast('失敗の記録を公開しました！💪', 'check_circle');

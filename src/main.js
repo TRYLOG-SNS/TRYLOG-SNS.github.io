@@ -221,7 +221,7 @@ export function showToast(message, icon = 'check_circle', duration = 3000) {
 // ===================================
 // Expose globals for page modules
 // ===================================
-window.__trylog = { navigate, showToast };
+window.__trylog = { navigate, showToast, _getAppState: () => appState };
 
 // ===================================
 // Init

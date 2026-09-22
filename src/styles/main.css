@@ -1,5 +1,33 @@
 @import './variables.css';
 
+/* ===== MATERIAL SYMBOLS ICON STABILITY ===== */
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded', sans-serif !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+  word-wrap: normal !important;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga';
+  overflow: hidden !important;
+  width: 1em !important;
+  height: 1em !important;
+  max-width: 1em !important;
+  max-height: 1em !important;
+  vertical-align: middle;
+  user-select: none;
+  flex-shrink: 0;
+}
+
 /* ===== AVATAR COMPONENT ===== */
 .avatar {
   display: inline-flex !important;

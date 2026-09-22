@@ -4,6 +4,7 @@
 import { getStoryById, getUserById, getStoryPosts, getAvatarStyle } from '../data/sample.js';
 
 let activeTab = 'goal';
+const tabsList = ['goal', 'process', 'result'];
 
 function renderPostCard(post, type) {
   if (!post) return '';
@@ -31,7 +32,7 @@ function renderPostCard(post, type) {
 
         <p class="md-typescale-label-medium" style="color:var(--md-sys-color-outline);margin-bottom:8px;letter-spacing:0.04em;">実行するアクション</p>
         <div style="display:flex;flex-direction:column;gap:8px;">
-          ${post.actions.map(a => `
+          ${(post.actions || []).map(a => `
           <div style="display:flex;align-items:flex-start;gap:10px;">
             <div style="width:20px;height:20px;border-radius:50%;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
               <span class="material-symbols-rounded" style="font-size:14px;font-weight:700;">check</span>
@@ -45,7 +46,7 @@ function renderPostCard(post, type) {
         <span class="md-typescale-body-small" style="color:var(--md-sys-color-outline);">${post.postedAt}</span>
         <button class="md-btn md-btn-tonal" style="border-radius:var(--md-sys-shape-corner-full);height:36px;padding:0 14px;">
           <span class="material-symbols-rounded" style="font-size:18px;">favorite</span>
-          ${post.likes}
+          ${post.likes || 0}
         </button>
       </div>
     </article>`;
@@ -70,7 +71,7 @@ function renderPostCard(post, type) {
       <div style="padding:10px 16px;background:var(--md-sys-color-surface-container-lowest);border-top:1px solid var(--md-sys-color-outline-variant);display:flex;align-items:center;justify-content:flex-end;">
         <button class="md-btn ${post.isLiked ? 'md-btn-tonal' : 'md-btn-outlined'}" style="border-radius:var(--md-sys-shape-corner-full);height:36px;padding:0 14px;">
           <span class="material-symbols-rounded" style="font-size:18px;font-variation-settings:'FILL' ${post.isLiked ? 1 : 0}">favorite</span>
-          ${post.likes}
+          ${post.likes || 0}
         </button>
       </div>
     </article>`;
@@ -95,7 +96,7 @@ function renderPostCard(post, type) {
         <div style="margin-top:14px;display:flex;align-items:center;justify-content:flex-end;">
           <button class="md-btn md-btn-filled" style="border-radius:var(--md-sys-shape-corner-full);background:${post.isSuccess ? 'var(--md-sys-color-tertiary)' : 'var(--md-sys-color-secondary)'};color:white;">
             <span class="material-symbols-rounded" style="font-size:18px;">favorite</span>
-            ${post.likes}
+            ${post.likes || 0}
           </button>
         </div>
       </div>
@@ -156,6 +157,12 @@ export function renderStoryDetail(params = {}) {
     </button>
   </div>
 
+  <!-- Swipe guidance header -->
+  <div style="background:var(--md-sys-color-surface-container-low);padding:6px 16px;text-align:center;font-size:11px;color:var(--md-sys-color-outline);display:flex;align-items:center;justify-content:center;gap:6px;">
+    <span class="material-symbols-rounded" style="font-size:14px;">swipe</span>
+    <span>左右にスワイプして「目標」「努力過程」「結果」を切り替え</span>
+  </div>
+
   <!-- Failure Origin Container -->
   ${failurePost ? `
   <div style="padding:16px 16px 0;">
@@ -169,8 +176,8 @@ export function renderStoryDetail(params = {}) {
     </div>
   </div>` : ''}
 
-  <!-- Tab Content -->
-  <div id="story-tab-content" style="padding:16px;">
+  <!-- Tab Content Area with Touch Swipe -->
+  <div id="story-tab-content" style="padding:16px;min-height:300px;touch-action:pan-y;">
     ${renderTabContent(activeTab, storyPosts)}
   </div>`;
 }
@@ -196,22 +203,54 @@ export function attachEvents(params) {
     if (navigate) navigate(data?.from || 'home');
   });
 
+  const updateTab = (newTab) => {
+    activeTab = newTab;
+    const data = window.__storyData;
+    if (!data) return;
+
+    document.querySelectorAll('.md-tab').forEach(b => {
+      b.classList.toggle('active', b.dataset.tab === activeTab);
+      const icon = b.querySelector('.material-symbols-rounded');
+      if (icon) icon.style.fontVariationSettings = `'FILL' ${b.dataset.tab === activeTab ? 1 : 0}`;
+    });
+
+    const content = document.getElementById('story-tab-content');
+    if (content) {
+      content.innerHTML = renderTabContent(activeTab, data.storyPosts);
+    }
+  };
+
   document.querySelectorAll('.md-tab').forEach(btn => {
     btn.addEventListener('click', () => {
-      activeTab = btn.dataset.tab;
-      const data = window.__storyData;
-      if (!data) return;
-
-      document.querySelectorAll('.md-tab').forEach(b => {
-        b.classList.toggle('active', b.dataset.tab === activeTab);
-        const icon = b.querySelector('.material-symbols-rounded');
-        if (icon) icon.style.fontVariationSettings = `'FILL' ${b.dataset.tab === activeTab ? 1 : 0}`;
-      });
-
-      const content = document.getElementById('story-tab-content');
-      if (content) {
-        content.innerHTML = renderTabContent(activeTab, data.storyPosts);
-      }
+      updateTab(btn.dataset.tab);
     });
   });
+
+  // Touch Swipe for Story Details Tab Navigation
+  const contentArea = document.getElementById('story-tab-content');
+  if (contentArea) {
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    contentArea.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    contentArea.addEventListener('touchend', (e) => {
+      const diffX = e.changedTouches[0].clientX - touchStartX;
+      const diffY = e.changedTouches[0].clientY - touchStartY;
+
+      if (Math.abs(diffX) > 50 && Math.abs(diffY) < 40) {
+        const currIdx = tabsList.indexOf(activeTab);
+        if (diffX < 0 && currIdx < tabsList.length - 1) {
+          // Swipe Left -> Next Tab
+          updateTab(tabsList[currIdx + 1]);
+        } else if (diffX > 0 && currIdx > 0) {
+          // Swipe Right -> Prev Tab
+          updateTab(tabsList[currIdx - 1]);
+        }
+      }
+    }, { passive: true });
+  }
 }

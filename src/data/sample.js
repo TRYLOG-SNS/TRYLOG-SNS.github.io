@@ -9,14 +9,67 @@ export const currentUser = {
   avatar: null,
   avatarColor: '#4F8EF7',
   avatarInitial: '葵',
+  topicCategory: 'コンテスト・大会',
+  topic: '音楽',
   bio: 'ピアノと水泳に夢中🎹🏊 失敗しても諦めない！何度でも挑戦します。',
-  location: '東京都',
+  bioVisibility: 'public', // 'public' | 'friends' | 'none'
+  ageGroup: '20代',
+  ageGroupVisibility: 'public', // 'public' | 'friends' | 'private'
   joinDate: '2024年3月',
   followersCount: 248,
   followingCount: 183,
   postsCount: 12,
   isSetupDone: false,
+  isNewUser: true,
 };
+
+export const topicCategories = [
+  {
+    name: 'コンテスト・大会',
+    icon: '🏆',
+    topics: [
+      '文芸',
+      '美術/デザイン/建築',
+      '音楽',
+      '学術/研究',
+      '弁論',
+      'プログラミング/IT',
+      'ビジネス・起業',
+      'その他（コンテスト・大会）'
+    ]
+  },
+  {
+    name: '試合・スポーツ',
+    icon: '⚽',
+    topics: [
+      '陸上/水泳/体操系',
+      '球技(団体)',
+      '球技(個人)',
+      '武道/格闘技',
+      'ウィンタースポーツ/アウトドア系',
+      'eスポーツ',
+      '将棋/囲碁/クイズ系'
+    ]
+  },
+  {
+    name: '資格・検定',
+    icon: '📝',
+    topics: [
+      '語学検定',
+      '情報/IT系検定',
+      'ビジネス/専門/キャリア系検定',
+      'その他学力系検定'
+    ]
+  },
+  {
+    name: 'その他・活動',
+    icon: '🌟',
+    topics: [
+      'ボランティア/社会貢献活動',
+      'その他'
+    ]
+  }
+];
 
 export const users = [
   {
@@ -27,10 +80,14 @@ export const users = [
     avatarColor: '#6BCB77',
     avatarInitial: '蓮',
     bio: '水泳選手。オリンピックを目指して練習中。',
+    bioVisibility: 'public',
+    ageGroup: '20代',
+    ageGroupVisibility: 'public',
     followersCount: 512,
     followingCount: 201,
     postsCount: 24,
     isFollowing: true,
+    isNewUser: false,
   },
   {
     id: 'user_02',
@@ -40,10 +97,14 @@ export const users = [
     avatarColor: '#FF6B6B',
     avatarInitial: '桜',
     bio: 'ピアノコンクール挑戦中🎹 3度目の正直！',
+    bioVisibility: 'public',
+    ageGroup: '高校生',
+    ageGroupVisibility: 'public',
     followersCount: 340,
     followingCount: 155,
     postsCount: 18,
     isFollowing: true,
+    isNewUser: true,
   },
   {
     id: 'user_03',
@@ -53,10 +114,14 @@ export const users = [
     avatarColor: '#FFB347',
     avatarInitial: '陸',
     bio: 'マラソンランナー志望。サブ3を目指す。',
+    bioVisibility: 'public',
+    ageGroup: '30代',
+    ageGroupVisibility: 'friends',
     followersCount: 892,
     followingCount: 340,
     postsCount: 35,
     isFollowing: false,
+    isNewUser: false,
   },
   {
     id: 'user_04',
@@ -66,10 +131,14 @@ export const users = [
     avatarColor: '#7B6FF0',
     avatarInitial: 'ひ',
     bio: 'バレエダンサー。全国大会への道。',
+    bioVisibility: 'public',
+    ageGroup: '大学生',
+    ageGroupVisibility: 'public',
     followersCount: 1203,
     followingCount: 280,
     postsCount: 41,
     isFollowing: true,
+    isNewUser: false,
   },
   {
     id: 'user_05',
@@ -79,10 +148,14 @@ export const users = [
     avatarColor: '#4DD0B3',
     avatarInitial: '健',
     bio: 'ギタリスト。音楽コンクールに向けて毎日練習。',
+    bioVisibility: 'public',
+    ageGroup: '20代',
+    ageGroupVisibility: 'private',
     followersCount: 267,
     followingCount: 198,
     postsCount: 15,
     isFollowing: true,
+    isNewUser: true,
   },
 ];
 
@@ -102,7 +175,11 @@ export const failurePosts = [
     comment: '本当に悔しいです。でも、この経験があるから強くなれる。次こそは絶対に突破します！',
     imageUrl: null,
     likes: 48,
-    comments: 12,
+    comments: 2,
+    commentsList: [
+      { id: 'c1', userId: 'user_01', text: '緊張感は誰にでもあります！次に向けて頑張りましょう💪', postedAt: '1時間前' },
+      { id: 'c2', userId: 'user_04', text: '素晴らしい挑戦です。陰ながら応援しています！', postedAt: '30分前' }
+    ],
     isLiked: false,
     postedAt: '2時間前',
     storyId: 'story_01',
@@ -122,7 +199,10 @@ export const failurePosts = [
     comment: 'あと0.2秒。それが全てでした。次の大会までにスタートを徹底的に練習します。',
     imageUrl: null,
     likes: 93,
-    comments: 27,
+    comments: 1,
+    commentsList: [
+      { id: 'c3', userId: 'user_03', text: '0.2秒の差は次で必ず埋まります！ファイト！', postedAt: '3時間前' }
+    ],
     isLiked: true,
     postedAt: '5時間前',
     storyId: 'story_02',
@@ -142,7 +222,8 @@ export const failurePosts = [
     comment: '悔しいけど、ケガをしながらも舞台に立てたことは誇りです。完全回復してから再挑戦します。',
     imageUrl: null,
     likes: 127,
-    comments: 34,
+    comments: 0,
+    commentsList: [],
     isLiked: false,
     postedAt: '1日前',
     storyId: 'story_03',
@@ -162,7 +243,8 @@ export const failurePosts = [
     comment: '24分の壁。これを越えなければ始まらない。次の神戸マラソンで必ずサブ3を達成します！',
     imageUrl: null,
     likes: 76,
-    comments: 19,
+    comments: 0,
+    commentsList: [],
     isLiked: false,
     postedAt: '2日前',
     storyId: 'story_04',
@@ -175,14 +257,15 @@ export const failurePosts = [
     result: '2次審査落ち',
     experience: '2年目',
     cause: '選曲のミスだったかもしれません。演奏技術より表現力の審査比重が高いと後から知りました。',
-    emotion: '落ち込み中',
+    emotion: '落ち込み',
     emotionEmoji: '😞',
     emotionColor: '#4DD0B3',
     retryIntent: false,
     comment: '今は少し休んで、また立て直したいと思います。来年再挑戦するかはまだ未定。',
     imageUrl: null,
     likes: 41,
-    comments: 8,
+    comments: 0,
+    commentsList: [],
     isLiked: false,
     postedAt: '3日前',
     storyId: 'story_05',
@@ -201,6 +284,8 @@ export const goalPosts = [
     storyId: 'story_01',
     postedAt: '2時間前',
     likes: 36,
+    comments: 0,
+    commentsList: [],
     isLiked: false,
   },
   {
@@ -214,6 +299,8 @@ export const goalPosts = [
     storyId: 'story_02',
     postedAt: '5時間前',
     likes: 71,
+    comments: 0,
+    commentsList: [],
     isLiked: false,
   },
 ];
@@ -228,6 +315,8 @@ export const processPosts = [
     storyId: 'story_01',
     postedAt: '1日前',
     likes: 52,
+    comments: 0,
+    commentsList: [],
     isLiked: false,
   },
   {
@@ -239,6 +328,8 @@ export const processPosts = [
     storyId: 'story_01',
     postedAt: '3日前',
     likes: 44,
+    comments: 0,
+    commentsList: [],
     isLiked: false,
   },
   {
@@ -250,12 +341,13 @@ export const processPosts = [
     storyId: 'story_02',
     postedAt: '2日前',
     likes: 88,
+    comments: 0,
+    commentsList: [],
     isLiked: true,
   },
 ];
 
 export const resultPosts = [
-  // story_02 の結果（蓮の水泳）
   {
     id: 'post_r01',
     userId: 'user_01',
@@ -266,6 +358,8 @@ export const resultPosts = [
     storyId: 'story_02',
     postedAt: '5日前',
     likes: 201,
+    comments: 0,
+    commentsList: [],
     isLiked: true,
   },
 ];
@@ -340,6 +434,13 @@ export function getStoryById(id) {
   return stories.find(s => s.id === id) || null;
 }
 
+export function getStoryByUserId(userId) {
+  if (userId === 'user_me') {
+    return stories.find(s => s.userId === 'user_me') || null;
+  }
+  return stories.find(s => s.userId === userId) || null;
+}
+
 export function getPostById(id) {
   return [
     ...failurePosts,
@@ -351,7 +452,7 @@ export function getPostById(id) {
 
 export function getStoryPosts(storyId) {
   const story = getStoryById(storyId);
-  if (!story) return { goal: null, process: [], result: null };
+  if (!story) return { failure: null, goal: null, process: [], result: null };
 
   return {
     failure: story.failurePostId ? getPostById(story.failurePostId) : null,
@@ -364,3 +465,131 @@ export function getStoryPosts(storyId) {
 export function getAvatarStyle(user) {
   return `background: ${user.avatarColor || '#4F8EF7'};`;
 }
+
+// Get recommended posts algorithm (Likes + New User boost)
+export function getRecommendedFeedPosts() {
+  const allPosts = [
+    ...failurePosts,
+    ...goalPosts,
+    ...processPosts,
+    ...resultPosts,
+  ];
+
+  return allPosts.sort((a, b) => {
+    const userA = getUserById(a.userId) || {};
+    const userB = getUserById(b.userId) || {};
+
+    const scoreA = (a.likes || 0) + (userA.isNewUser ? 50 : 0);
+    const scoreB = (b.likes || 0) + (userB.isNewUser ? 50 : 0);
+
+    return scoreB - scoreA;
+  });
+}
+
+// Add new failure post
+export function addFailurePost(postData) {
+  const newPost = {
+    id: `post_f_${Date.now()}`,
+    userId: currentUser.id,
+    type: 'failure',
+    contestName: postData.contestName,
+    result: postData.result,
+    experience: postData.experience || '初挑戦',
+    cause: postData.cause,
+    emotion: postData.emotion || '前向き',
+    emotionEmoji: postData.emotionEmoji || '💪',
+    emotionColor: '#FF6B6B',
+    retryIntent: postData.retryIntent ?? true,
+    comment: postData.comment || '',
+    imageUrl: postData.imageUrl || null,
+    likes: 0,
+    comments: 0,
+    commentsList: [],
+    isLiked: false,
+    postedAt: 'たった今',
+    storyId: `story_me_${Date.now()}`,
+  };
+
+  failurePosts.unshift(newPost);
+  currentUser.postsCount++;
+
+  // Create or attach to current user story
+  let userStory = stories.find(s => s.userId === currentUser.id);
+  if (!userStory) {
+    userStory = {
+      id: newPost.storyId,
+      userId: currentUser.id,
+      title: `${postData.contestName}への挑戦`,
+      category: currentUser.topic || '挑戦',
+      failurePostId: newPost.id,
+      goalPostId: null,
+      processPostIds: [],
+      resultPostId: null,
+    };
+    stories.unshift(userStory);
+  } else {
+    userStory.failurePostId = newPost.id;
+  }
+
+  return newPost;
+}
+
+// Add new goal post
+export function addGoalPost(postData) {
+  const newPost = {
+    id: `post_g_${Date.now()}`,
+    userId: currentUser.id,
+    type: 'goal',
+    title: postData.title,
+    deadline: postData.deadline,
+    actions: postData.actions || [],
+    comment: postData.comment || '',
+    storyId: `story_me_${Date.now()}`,
+    postedAt: 'たった今',
+    likes: 0,
+    comments: 0,
+    commentsList: [],
+    isLiked: false,
+  };
+
+  goalPosts.unshift(newPost);
+  currentUser.postsCount++;
+
+  let userStory = stories.find(s => s.userId === currentUser.id);
+  if (!userStory) {
+    userStory = {
+      id: newPost.storyId,
+      userId: currentUser.id,
+      title: `${postData.title}への目標`,
+      category: currentUser.topic || '目標',
+      failurePostId: null,
+      goalPostId: newPost.id,
+      processPostIds: [],
+      resultPostId: null,
+    };
+    stories.unshift(userStory);
+  } else {
+    userStory.goalPostId = newPost.id;
+  }
+
+  return newPost;
+}
+
+// Add comment to any post
+export function addCommentToPost(postId, text) {
+  const post = getPostById(postId);
+  if (!post) return false;
+
+  if (!post.commentsList) post.commentsList = [];
+  const newComment = {
+    id: `comment_${Date.now()}`,
+    userId: currentUser.id,
+    text: text,
+    postedAt: 'たった今',
+  };
+
+  post.commentsList.push(newComment);
+  post.comments = post.commentsList.length;
+  return newComment;
+}
+
