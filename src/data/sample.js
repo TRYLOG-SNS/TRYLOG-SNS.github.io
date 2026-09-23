@@ -18,7 +18,7 @@ export const currentUser = {
   joinDate: '2026年9月',
   followersCount: 0,
   followingCount: 0,
-  postsCount: 12,
+  postsCount: 2,
   isSetupDone: false,
   isNewUser: true,
 };
