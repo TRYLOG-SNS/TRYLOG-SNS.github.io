@@ -71,10 +71,16 @@ export function renderSearch() {
           <p class="md-typescale-body-medium" style="color:var(--md-sys-color-on-surface-variant);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${user.bio}</p>
         </div>
 
-        <button class="md-btn ${user.isFollowing ? 'md-btn-outlined' : 'md-btn-filled'} follow-btn" data-user-id="${user.id}" style="
-          border-radius:var(--md-sys-shape-corner-full);height:36px;padding:0 14px;font-size:12px;
-          ${user.isFollowing ? '' : 'background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);'}
-        ">${user.isFollowing ? 'フォロー中' : 'フォロー'}</button>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+          <button class="md-btn md-btn-tonal dm-btn" data-user-id="${user.id}" style="
+            border-radius:var(--md-sys-shape-corner-full);height:36px;padding:0 12px;font-size:12px;
+            background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);
+          ">DM</button>
+          <button class="md-btn ${user.isFollowing ? 'md-btn-outlined' : 'md-btn-filled'} follow-btn" data-user-id="${user.id}" style="
+            border-radius:var(--md-sys-shape-corner-full);height:36px;padding:0 14px;font-size:12px;
+            ${user.isFollowing ? '' : 'background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);'}
+          ">${user.isFollowing ? 'フォロー中' : 'フォロー'}</button>
+        </div>
       </div>`).join('')}
     </div>
 
@@ -104,6 +110,17 @@ export function renderSearch() {
 }
 
 export function attachEvents() {
+  document.querySelectorAll('.dm-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const userId = btn.dataset.userId;
+      const user = users.find(u => u.id === userId);
+      if (!user) return;
+
+      const { showToast } = window.__trylog || {};
+      if (showToast) showToast(`${user.name}さんにDMを送信しました`, 'mail');
+    });
+  });
+
   document.querySelectorAll('.follow-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const userId = btn.dataset.userId;
