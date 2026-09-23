@@ -4,11 +4,11 @@
 
 export const currentUser = {
   id: 'user_me',
-  name: '山田 太郎',
-  username: '@taro_yamada',
+  name: '田中　秀虎',
+  username: '@hidetora_tanaka',
   avatar: null,
   avatarColor: '#4F8EF7',
-  avatarInitial: '太',
+  avatarInitial: '秀',
   topicCategory: 'コンテスト・大会',
   topic: 'ビジネス・起業',
   bio: 'ビジネスコンテストを頑張っている高校生です。よろしくお願いします！',
